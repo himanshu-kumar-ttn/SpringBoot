@@ -1,10 +1,13 @@
 package com.himanshu.Rest.APIs.controller;
 
 import com.himanshu.Rest.APIs.entity.Employee;
+import com.himanshu.Rest.APIs.error.EmployeeNotFoundException;
 import com.himanshu.Rest.APIs.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @RestController
@@ -26,7 +29,11 @@ public class EmployeeController {
     // @RequestBody annotation -> whatever the data you are getting as a request body(json)
     // get that particular json and convert it into my Employee object here
 //    @RequestBody annotation is used to map the request body of the endpoint to the method parameter.
-    public Employee createEmployee(@RequestBody Employee employee) {
+
+    // hibernate validation here we are getting data from client here is we are getting request body
+    // @Valid annottion so whenever the request is coming to save the data from the post mapping that particular
+//    json body will be validated against the name as we have marked it as @NotBlank
+    public Employee createEmployee(@Valid @RequestBody Employee employee) {
         // we are using spring and spring already knows that we already have that particular
 //        employee service, employee service implementation and so on this we are doing using new keyword spring already have this we shouldn't be doing this
 //        EmployeeService service = new EmployeeServiceImpl();
@@ -49,9 +56,46 @@ public class EmployeeController {
 
 
     @DeleteMapping("/employees/{employeeId}")
-    public void deleteEmployees(@PathVariable("employeeId") Long id) {
-        employeeService.deleteEmployee(id);
+    public String deleteEmployees(@PathVariable("employeeId") Long employeeId) {
+        employeeService.deleteEmployee(employeeId);
+        return "Employee deleted successfully!";
     }
 
+    @GetMapping("/employees/count")
+    public Long countEmployees() {
+        return employeeService.countEmployee();
+    }
+
+    // get employee by id
+    @GetMapping("employees/{employeeId}")
+    public Employee getEmployeesById(@PathVariable("employeeId") Long employeeId) throws EmployeeNotFoundException {
+        return employeeService.getEmployeeById(employeeId);
+    }
+
+    // get employee by name
+    @GetMapping("/employees/name/{name}")
+    public Employee getEmployeesByName(@PathVariable("name") String name) {
+
+        return employeeService.getEmployeeByName(name);
+    }
+
+    // get employee by age
+    @GetMapping("/employees/age/{age}")
+    public Employee getEmployeesByAge(@PathVariable("age") Integer age) {
+        return employeeService.getEmployeeByAge(age);
+    }
+
+
+    //     employee between age of 20 to 30
+    @GetMapping("/employees/age")
+    public List<Employee> getEmployeesByAgeInBetween() {
+        return employeeService.getEmployeeByAgeInBetween();
+    }
+
+    // employee whose name starts with char S or {char}
+    @GetMapping("employees/char/{char}")
+    public List<Employee> getEmployeesWithNameChar(@PathVariable("char") String ch) {
+        return employeeService.getEmployeesWithNameChar(ch);
+    }
 
 }

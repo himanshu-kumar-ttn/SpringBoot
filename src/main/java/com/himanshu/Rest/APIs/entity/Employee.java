@@ -1,21 +1,26 @@
 package com.himanshu.Rest.APIs.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 // To make this particular class as an entity so that it can interact with our database using JPA
 //@Entity annotation specifies that this Java class is mapped to the database table.
+
+// Hibernate validation
+// whenever i am getting the data as an input from the json i want
+//my employee always if i am not having age its fine but its mandatory to have employee name
+
 @Entity
-@Table(name = "employee")
 public class Employee {
     private @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "emp_id")
     Long id;  // id is marked with more JPA annotations to indicate it’s the primary key and automatically populated by the JPA provider.
 
 
-    @Column(name = "name")
+    // particular validation
+   @NotBlank(message = "Please Add Employee Name")
     private String name;
-    @Column(name = "age")
+
     private int age;
 
     public Long getId() {
